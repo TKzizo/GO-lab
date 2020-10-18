@@ -39,7 +39,7 @@ _______________________
     
      ```
 ---
-- **Converting to Ascii**:
+- **Converting to utf-8**:
     ```go
      k := 42 
      sign = string(k)
@@ -131,3 +131,67 @@ _______________________
      value << num // bit shift left num-time
     ```
 >## Constants
+ - **Constant declaration**
+    ```go
+        const myConst int = 42 //if it starts with upper case i will be exported as gloabl const
+
+    ```
+---
+ - Constant can be ***Shadowed*** just like variables.
+
+---
+ - the type can be determined at comopilation:
+    ```go
+        const myConst = 44 
+        var num int16 = 20
+
+        var num2 = num + myConst // now myConst will be int16 as will be num
+    ```
+---
+ - ***Enumerating constants***:
+    ```go
+        //declare a cosntant bloc 
+        const (
+            const1 = iota //iota is function used to keep track of const created
+            const2 = iota 
+            const3 // since we are in const bloc it uses same pattern and assign iota()
+        )
+
+        //const1 has value 0
+        //cosnt2 has value 1
+        //const3 has value 2
+    ```
+ - ***iota*** usage:
+    ```go
+        //enumeration of values
+        const (
+            _     = iota //if we don't need 0
+            user1 = iota
+            user2
+        )
+    ```
+    ```go
+        // since const must be defined at compilation and the power func is package
+        // we can use bit shift with iota to replace that
+        const (
+            _   = iota 
+            KB  = 1 << (10 * iota) 
+            MB // this will be 1 << (10 * 2)
+            GB
+            TB
+        )
+    ```
+    ```go
+        const (
+            isAdmin = 1 << iota //00000001
+            isManager //00000010
+            isSalesman //00000100
+
+            canUseMetro //00001000
+            canUseCar //00010000
+            canUseTrain //00100000
+        )
+        var employee byte = isManager | canUseTrain //00100010
+         
+        
+    ```
