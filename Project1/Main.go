@@ -53,4 +53,6 @@ func main() {
 
 	fmt.Printf("value: %v ",table)
 	fmt.Printf("value: %v ",table2)
+
+	var length int = len(table) // gets length of he array 
 }

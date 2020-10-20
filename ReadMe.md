@@ -198,13 +198,63 @@ _______________________
 >## Data Structures
 
 >>### Arrays and slices:
-- **Array declaration:**
-    ```go
+   - **Array declaration:**
+     ```go
         /// implicit
          name := [size]type {values, .. , ..}  
          /// same as:
          name := [...]type {values , .. , ..}
         /// explicit 
          var name [size]type  // empty array
-    ```
+
+         //Examples 
+         name[2] = "hello"
+
+         var length int = len(name) // length of the array
+
+         var capaciy int = cap(name) // capacity of array 
+
+         // multidiementional array 
+         var 2d_table [3][3]int = [3][3]int {
+                                                [3]int {3,3,3}, 
+                                                [3]int {2,2,2},
+                                                [3]int {1,1,1}
+                                            }
+      ```
+   - arrays are ***passed as data***:
+      ```go
+        a := [...]int {1,2,3}
+        b := a // now b has a copy of array a so if we change b nothing happens to a
+        c := &a // c points to the same table a  
+
+      ```
+   - Slice declaration 
+     ```go
+      a := []int {1,3,4,5.10,22}
+
+      b = a // point to same slice a 
+
+      length := len(b) // legth of slice b
+      capacityy := cap(b) // capacity of slcie b
+      
+      c := a[2:] // elemtst from 3rd index to last
+      d := a[:2] // elemnts before 6th index
+      e := a[1:5] //figure it out xDDD
+
+     // create slice from array
+      arr := [3]int {3,2,4}
+      slic := arr[:]
+
+      // add element to slice 
+     a = append(a, values , ..)
+    
+     // concatinate slice to slace 
+     a = append(a , []b{1,2,3}...) // the ... is called spreading 
+
+     ```
+   - ***Make*** function
+     ```go
+        a := make( []string , length )
+        a := make( []int , length , capacity)
+     ```
 >>### Maps and Structs
