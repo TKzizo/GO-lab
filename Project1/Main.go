@@ -47,4 +47,10 @@ func main() {
 	fmt.Printf("value: %v ; type:  %T\n",o,o)
 
 
+	//Arrays and Slices 
+	var table [2]string
+	table2 := [...]int {1,2,3}
+
+	fmt.Printf("value: %v ",table)
+	fmt.Printf("value: %v ",table2)
 }

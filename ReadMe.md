@@ -195,3 +195,16 @@ _______________________
          
         
     ```
+>## Data Structures
+
+>>### Arrays and slices:
+- **Array declaration:**
+    ```go
+        /// implicit
+         name := [size]type {values, .. , ..}  
+         /// same as:
+         name := [...]type {values , .. , ..}
+        /// explicit 
+         var name [size]type  // empty array
+    ```
+>>### Maps and Structs
