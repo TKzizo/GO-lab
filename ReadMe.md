@@ -57,7 +57,7 @@ _______________________
  - **strconv** string convertion package :        
     - **Itoa** converts integer to string
  ---
- - 
+ - ***reflect*** to use tags
 
 >## Primitive types
 - **Boolean**
@@ -300,12 +300,12 @@ _______________________
         1. structs follow same capital rule as variables which means if struct name is catpital letter then it will be available to other packages however if its elemetns are lower case then the struct is visible but they are not.
         1. structs are passed by value.
         1. to pass struct pas reference we use **&** same as arrays.
-        
+
    - **structs declaration**:
         ```go
             // first we define the struct 
             type Name_of_str struct {
-                first_element type1,
+                first_element type1
                 second_elemetn type2
             }
             //now
@@ -320,9 +320,50 @@ _______________________
 
 
         ```
-   - **Structs manipulatio**:
+   - **Structs manipulation**:
         ```go
             // access element of struct:
             struct_name.name_element
+        ```
+     - similar to **inheretance** in other languages in Go we have **composition**:
+        ```go
+            type Shape struct{
+                surface float32
+            }
+            type triangle struct{
+                Shape
+                _type string
+            }
+            // now the type Shape is embedded in triangle and we can access Surface same as any other elment of triangle
+
+            //now to initialize a var we have two methods
+            //1st method is:
+            b := triangle{}
+
+                b.surface = 12
+                b._type = "straight"
+            //2nd method 
+            b := triangle{
+                Shape : Shape{surface : 64},
+                _type : "straight"
+            }
+            
+        ```
+     - **Tags** we use them to provide a text relative to a certain value, we need **reflect** package :
+        ```go
+            type Animal struct {
+                origin string 
+                Name string `required Max "25"` 
+            } 
+
+            //to use the tag
+                t := reflect.TypeOf(Animal{})
+                field , _ := FieldByName("Name")
+            // field == required Max: "25"
 
         ```
+            
+
+
+>#### Reference 
+    all appreciation goes to FreeCodeCamp and Micheal Van Sickle for the inspiration and help with the creation of this document.
