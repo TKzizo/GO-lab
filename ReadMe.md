@@ -238,7 +238,7 @@ _______________________
       capacityy := cap(b) // capacity of slcie b
       
       c := a[2:] // elemtst from 3rd index to last
-      d := a[:2] // elemnts before 6th index
+      d := a[:6] // elemnts before 6th index
       e := a[1:5] //figure it out xDDD
 
      // create slice from array
@@ -257,4 +257,72 @@ _______________________
         a := make( []string , length )
         a := make( []int , length , capacity)
      ```
->>### Maps and Structs
+>>### Maps:
+   -  **Note about Maps**:
+        1. map is pair of key string.
+        1. the key can be any primitive type as well as arrays but not slice.
+        1. the order of the elements in maps isn't guaranteed.
+        1. Maps are passed by reference.
+   - **Maps declaration**:
+     ```go
+        a_map := map[key]type_of_values {
+            "key1" : value1,
+            "key2" : value2
+        }
+
+        //using the make function
+        2nd_map := make(map[string]int) //gives an empty map
+
+     ```
+   - **Maps manipulation**:
+     ```go
+        // to get an element from the map we  specify the key:
+        a_map := map[key]type_of_values {
+            "key1" : value1,
+            "key2" : value2
+        }
+        var1 := a_map["key1"]
+
+        // to check if the key actualy exits we can also do this:
+        _ , exist? := a_map["key"]
+        fmt.Printf(exist?) // return true if key exist else false
+                            // _ will contain always 0 if the key doesn't exist 
+
+        // to delete an element from the map we can use "delete " function:
+        delete(name_of_map , the_key)
+
+
+        // to add an element to the map:
+        a_map["new key"] = new_value
+     ```  
+>>### Structs:
+   - **Notes about *Structs***:
+        1. structs follow same capital rule as variables which means if struct name is catpital letter then it will be available to other packages however if its elemetns are lower case then the struct is visible but they are not.
+        1. structs are passed by value.
+        1. to pass struct pas reference we use **&** same as arrays.
+        
+   - **structs declaration**:
+        ```go
+            // first we define the struct 
+            type Name_of_str struct {
+                first_element type1,
+                second_elemetn type2
+            }
+            //now
+        var1 := Name_of_str {
+            first_element : value,
+            second_element : value2
+
+        
+        // Anomymous struct:
+            str := struct{name string}{name : "kat"}
+        }
+
+
+        ```
+   - **Structs manipulatio**:
+        ```go
+            // access element of struct:
+            struct_name.name_element
+
+        ```
