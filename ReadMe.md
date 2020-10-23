@@ -58,6 +58,11 @@ _______________________
     - **Itoa** converts integer to string
  ---
  - ***reflect*** to use tags
+ ---
+ - ***math*** math functions:
+    - **Abs()** absolute value. 
+    - **Sqrt()** square root.
+    - **Pow()** power.
 
 >## Primitive types
 - **Boolean**
@@ -260,6 +265,7 @@ _______________________
 >>### Maps:
    -  **Note about Maps**:
         1. map is pair of key string.
+        
         1. the key can be any primitive type as well as arrays but not slice.
         1. the order of the elements in maps isn't guaranteed.
         1. Maps are passed by reference.
@@ -298,35 +304,36 @@ _______________________
 >>### Structs:
    - **Notes about *Structs***:
         1. structs follow same capital rule as variables which means if struct name is catpital letter then it will be available to other packages however if its elemetns are lower case then the struct is visible but they are not.
+
         1. structs are passed by value.
         1. to pass struct pas reference we use **&** same as arrays.
 
    - **structs declaration**:
-        ```go
-            // first we define the struct 
-            type Name_of_str struct {
-                first_element type1
-                second_elemetn type2
-            }
+     ```go
+     // first we define the struct 
+     type Name_of_str struct {
+        first_element type1
+        second_elemetn type2
+     }
             //now
-        var1 := Name_of_str {
-            first_element : value,
-            second_element : value2
-
+            var1 := Name_of_str {
+                first_element : value,
+                second_element : value2
+            }  
         
         // Anomymous struct:
             str := struct{name string}{name : "kat"}
         }
 
 
-        ```
+     ```
    - **Structs manipulation**:
         ```go
             // access element of struct:
             struct_name.name_element
         ```
      - similar to **inheretance** in other languages in Go we have **composition**:
-        ```go
+     ```go
             type Shape struct{
                 surface float32
             }
@@ -348,9 +355,9 @@ _______________________
                 _type : "straight"
             }
             
-        ```
+     ```
      - **Tags** we use them to provide a text relative to a certain value, we need **reflect** package :
-        ```go
+     ```go 
             type Animal struct {
                 origin string 
                 Name string `required Max "25"` 
@@ -358,12 +365,63 @@ _______________________
 
             //to use the tag
                 t := reflect.TypeOf(Animal{})
-                field , _ := FieldByName("Name")
+                field , _ := t.FieldByName("Name")
             // field == required Max: "25"
 
+     ```
+
+>## Conditionals:
+
+>>### if statements:
+
+   - **must always have "{}"**.
+
+   - if we are testing multiple statement using  (OR " || " ) then the compliler stops at the first true statement , this is called **short circuting**.
+    
+   - format: "**else if**".
+   -  
+
+   ___
+   - **useful usage**:
+        ```go
+            maps := map[string]int {
+                "key1" : 123,
+                "key2" : 456
+            }
+
+        if value,ok := maps["key3"] /* this is called initialiser*/ ; ok {
+            fmt.Print(value) //value is only available inside the scope
+        }
+
+        //return booleen test 
+            var1 := 50
+            var2 := 44
+
+            fmt.Println(var1 > var2 , var1 == var2) 
+            //output 
+                true false
+        
         ```
-            
+>>### Switch statement:
+   - the **break** is implicit so no need to write it.
+   - so if we want two cases to execute we use **fallthrough**.
+   -  
+---
+   ```go
+    switch value /* can be initialiser same as if statement*/ {
+        case value1:
+            //do this
+        case value2: 
+            //do that
+        case value3, value4:
+            //do somthing
+        default:
+            //do shit
+    }
+```
 
 
 >#### Reference 
-    all appreciation goes to FreeCodeCamp and Micheal Van Sickle for the inspiration and help with the creation of this document.
+   - all appreciation goes to FreeCodeCamp and Micheal Van Sickle for the inspiration and help with the creation of this document.
+
+     **[FreecodeCamp Golang crash course  \*_*  ](https://www.youtube.com/watch?v=YS4e4q9oBaU)**
