@@ -403,9 +403,8 @@ _______________________
         
         ```
 >>### Switch statement:
-   - the **break** is implicit so no need to write it.
+   - the **break** is implicit so no need to write it ,but we can use it in some situations.
    - so if we want two cases to execute we use **fallthrough**.
-   -  
 ---
    ```go
     switch value /* can be initialiser same as if statement*/ {
@@ -419,7 +418,77 @@ _______________________
             //do shit
     }
 ```
+---
+   - ***Type switch***
+  ```go
+    var i interface{} = 1 // or "hello" or [3]int{} or any primitive type
+    
+    switch i.(type) {
 
+        case int:
+            //do this
+                if bla_bla { break}
+            //else do another thing
+        case string:
+            //do that:
+        default:
+            //something
+    }
+  ```
+>## Loops: "**For**"
+   - In Go there is only the **For** loop.
+---
+   - **simple loops**
+     ```go
+        //single index
+        for i := 0; i < 5 ; i++ {
+            //do somthing
+        }
+
+        //multiple indexes
+        for i , j := 0,0 ; i < 5 ; i , j = i+1 , j+1{
+            //do something crazy
+        }
+
+        //while looop
+         var i int = 0
+         for i < 5 {
+             //do somethig
+             i++
+         }
+
+        //do_while loop
+        for {
+            //do something
+            if bla_bla {break}
+        }
+     ```
+   - **Lables**:
+     ```go
+        // if we want to break off nested loops
+        i := 0
+        Loop: 
+            for i < 10 {
+                for j:=0;j<5;j++{
+                    //do bla bla
+                    if bla_bla {break Loop}
+                }
+                i++
+            }
+     ```
+
+   - **looping collections**
+     ```go
+        //collection can be of any type array, slice, maps,String
+        for key, value := range collection {
+            fmt.Println(key , value)
+        }     
+        
+        //if we just want the key like in maps we can
+        for key := range maps{
+            //print key
+        }
+     ```
 
 >#### Reference 
    - all appreciation goes to FreeCodeCamp and Micheal Van Sickle for the inspiration and help with the creation of this document.

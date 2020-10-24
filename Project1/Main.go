@@ -46,7 +46,9 @@ func main() {
 	var o complex128 = complex(float64(r), float64(im)) //expects float arguments
 	fmt.Printf("value: %v ; type:  %T\n", o, o)
 
+	
 	//Arrays and Slices
+	//
 	var table [2]string
 	table2 := [...]int{1, 2, 3}
 
@@ -54,6 +56,11 @@ func main() {
 	fmt.Printf("value: %v ", table2)
 
 	var length int = len(table) // gets length of he array
-	fmt.Printf("the table lengh is :", length)
+	fmt.Println("the table lengh is :", length)
 
+
+	// LOOPING
+	for i,j := 0,0 ;i < 10 ; i,j = i+1,j+1{
+		fmt.Println(i, j)
+	}
 }
