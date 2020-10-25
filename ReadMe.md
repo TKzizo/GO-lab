@@ -427,7 +427,7 @@ _______________________
 
         case int:
             //do this
-                if bla_bla { break}
+                if bla_bla { break} //when we don't want the rest of the bloc to execute
             //else do another thing
         case string:
             //do that:
@@ -490,6 +490,96 @@ _______________________
         }
      ```
 
+>## Control Flow
+
+>>### Defer:
+   - multiples defer are executed in LIFO.
+--- 
+ ```go
+    //suppose we made an http request and we need to work with the response before closing the response,
+    //inorder not to forget that we can use "defer" to close it at any point but it will be closed just before the current function return.
+     import (
+         "fmt"
+         "log"
+         "net/http"
+         "io/ioutil"
+     )
+     func main(){
+        res , err := http.Get("http://www.google.com/robots.txt")
+
+        if err != nil {
+            log.Fatal(err) //couldn't get the document
+        }
+
+        defer res.Body.Close() //this should be last thing to do but since we putted defer it will be last to execute
+
+        robots , err := ioutil.ReadAll(res.Body) //robots contains bytes
+        if err != nil {
+            log.Fatal(err) //couldn't read
+        }
+        fmt.Printf("%s",robots) // %v prints bytes
+
+     }
+ ```
+ ```go
+  // here is notice:
+   a := "string"
+   defer fmt.Print(a)    
+   a = "hello"
+
+   //output: 
+    "string"
+
+ ```
+>>### Panic:
+   - panic is to be used only in must situation and not just anywhere.
+    
+   - in Go we don't have exeptions but we have errors and panic throw an error.
+
+   - all defer executes before terminating the function that panicked.
+ ```go
+    // we can stop the execution of program by panic at some erreur 
+
+    fmt.Println("hello beautful world")
+    panic("shit we are in the underẃorld")
+    fmt.Println("i love this place") // this will not printed
+
+    //output:
+        hello beautful world
+        panic: shit we are in the underẃorld
+ ```
+>>### Recover:
+   - not to stop all the program from executing if a function panics we use recover on that function so the rest of the program can execute and we can get info about the err.
+ ```go
+    func main() {
+        fmt.Println("hello there !!!")
+        panicker()
+        fmt.Println("goodbye my darkest old friend")
+    }
+
+    func panicker() {
+        fmt.Println("it's about to go down")
+        
+        defer func() {
+            if err := recover(); err != nil {
+                log.Println("Error:",err)
+            }
+        }() // anonymous function
+
+        panic("this is hell")
+        fmt.("i'm sure this not gonna be written")
+    }
+
+    //output:
+    """
+        hello there !!!
+        it s about to go down
+        yyyy/mm/dd hh:mm:ss Error: this is hell
+        goodbye my darkest old friend
+    """
+
+    // in case we can't handle the error we just panic(err) after the log.
+ ``` 
 >#### Reference 
    - all appreciation goes to FreeCodeCamp and Micheal Van Sickle for the inspiration and help with the creation of this document.
 
