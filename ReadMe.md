@@ -63,6 +63,18 @@ _______________________
     - **Abs()** absolute value. 
     - **Sqrt()** square root.
     - **Pow()** power.
+---
+ -  ***log*** show loggings:
+    - **Println()** formated error
+    - **Fatal** send -1 return  
+---
+ - ***Net/http*** net tools:
+    - **Get()** return response and err
+---
+ - ***io/ioutil*** input/output utilities:
+    - **ReadAll** read bytes
+---
+
 
 >## Primitive types
 - **Boolean**
@@ -533,7 +545,7 @@ _______________________
  ```
 >>### Panic:
    - panic is to be used only in must situation and not just anywhere.
-    
+
    - in Go we don't have exeptions but we have errors and panic throw an error.
 
    - all defer executes before terminating the function that panicked.
@@ -577,9 +589,35 @@ _______________________
         yyyy/mm/dd hh:mm:ss Error: this is hell
         goodbye my darkest old friend
     """
-
     // in case we can't handle the error we just panic(err) after the log.
  ``` 
+
+>## Pointers:
+   - we can't do arithmetic with pointers.
+   ---  
+ ```go
+        //declaring pointers:
+        a := 42
+        var point *int 
+        point = &a // hexadecimal number
+
+        // structs and pointers:
+        type doc struct {
+            name int
+        }
+        
+        var point *doc // <nil> pointer to structer 
+        //or 
+        point := new(doc) // &{0} pointer to empty structure
+        //or 
+        point := &doc{}
+
+        (*point).name = 42
+        //same as
+        point.name = 42
+
+ ```
+
 >#### Reference 
    - all appreciation goes to FreeCodeCamp and Micheal Van Sickle for the inspiration and help with the creation of this document.
 
