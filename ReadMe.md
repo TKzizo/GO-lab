@@ -617,7 +617,136 @@ _______________________
         point.name = 42
 
  ```
+ >## Functions:
+   - **Notes**:
+     1. functions are case sensitive same as variables.
 
+   - **declaring functions**:
+     ```go
+        func functions_name(parameteres,..) return_type {
+            //body 
+        }
+
+        //example:
+        func hello(msg1,msg2 string,) {
+            fmt.Println(msg1,msg2)
+        }
+
+        //working with poiters:
+        func hello(name,msg *string) {
+            // do stuff
+            //...
+            //...
+        }
+        //calling the functions:
+         hello (&variable,&variable2)
+     ```
+   - **Go sugar functions xDD** aka **variadic parameters**
+     ```go
+      //we can send multiple data to a function without knowing how many until runtime
+      //there is only one condition it has to be the last parameter:
+
+      func koko(msg string, values ...int) int {
+
+          fmt.Println(msg)
+          result := 0
+          for _ , val := range(values){
+              result += val
+          }
+        return result
+      }
+      //calling the function
+        sum := koko("hello world",1,2,3,5,9,8)
+
+      //another way to declare the function is like this
+      func koko(msg string, values ...int) (result int) { //result is instanced here
+          
+          for _,val := range values {
+              result += val
+          }
+
+          return  // we dont have to precise because we already did in the begining
+      }  
+     ```  
+   - **Returning pointers to local variables**:
+     ```go
+      // this may seem weid espicialy if you know how the local stack and the heap works
+      // but in Go we have the abiliy to reference a local variable:
+      func main() {
+          variable := nameless() // this is pointer to varible name in func nameless()
+          fmt.Println(*variable)
+      }      
+
+      func nameless() *string {
+        name := "My name is Jeff"
+        return &name
+      }
+     ```  
+   - **Multiple parameters and errors**
+     ```go
+        func main() {
+
+            d , err := divide(6.2 , 6.2)
+            if err != nil {
+                fmt.Println(err)
+                return // to end the main function
+            }
+
+            fmt.Println(d)
+        }
+
+        func divide(val1 float64, val2 float64) (float64,error) {
+            if b == 0 {
+                return 0.0, fmt.Errorf("cannot divide by 0")
+            }
+            return a/b , nil
+        }
+     ``` 
+   - **anonymous function**:
+     ```go
+        // we can create nameless functions and execute them instantly by adding () after {}
+
+        func() {
+            //do stuff
+            //do stuff
+        }()     
+
+        // we can also pass function as variables 
+        var f func(float64,int ) (int , error)
+
+        f = func(a ,b float64) (int , error) {
+            //do stuff
+            //do stuff
+        }
+
+        val , err := f(6.0, 5.2)
+     ```  
+     
+   - ***Methods in Go*** 
+     ```go
+        func main() {
+            g := DOC {
+                name : "john",
+                spec: "surgery"
+            }
+
+            g.operate()
+        } 
+        
+        type DOC struct {
+            name string
+            spec string
+        }
+
+        func (k DOC) operate() {  
+            // know that the struct DOC is passed by value
+            // we can pass it by refence by addig *, by doing that we can make changes to k
+
+            fmt.Print("Dr.",k.name," is doing a ",k.spec)
+        }
+        
+     ```
+     
 >#### Reference 
    - all appreciation goes to FreeCodeCamp and Micheal Van Sickle for the inspiration and help with the creation of this document.
 
