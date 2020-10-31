@@ -138,7 +138,7 @@ _______________________
      /   //division
      %   //modulo     
      ```
-- ***byte operations***
+- ***bitwise     operations***
      ```go
      &   // logic AND
      |   // logic OR
