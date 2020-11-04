@@ -747,15 +747,51 @@ _______________________
 >> ## Interfaces:
  - ***Notes*** :
     1. unlike struct, interfaces don't store data but behavior instead.
-    1. 
+    1. In Go interfaces are **implemented implicitly** by creating a method that replicate their behavior.
+    1. by convention the name of an interface should end with a "er"
+    1. declarations inside interfaces must start with capitas to be used outside of package.
+    1.
 
  - ***declaring an Interface*** :
     ```go
-        type name interface {
-            // elements
-            // elements
+        type name(er) interface {
+            // we declare a method without defining it:
+            Create([]byte) (int)
+        }
+
+        type anything struct {
+            // elemetns
+        }
+
+        func (obj (*)anything ) Create([]byte) int {
+            // we must define
         }
     ```
+ - ***Some use cases***:
+     - suppose we want to create a new type of **int** that has a certain method:
+        ```go
+            func main() {
+                it := Inter(0) // the brackets because it empty int 
+                var ic IntCounter = &it
+                for i := 0; i < 10 ; i++ {
+                    fmt.Println( ic.incrementer() )
+                }
+            }
+
+            
+            type IntCounter interface {
+                incrementer() int
+            }
+
+            type Inter int
+
+            func (obj *Inter) incrementer() int {
+                    *obj++
+                    return int(*obj)
+            }
+        ```
+
+
 >#### Reference 
    - all appreciation goes to FreeCodeCamp and Micheal Van Sickle for the inspiration and help with the creation of this document.
 
