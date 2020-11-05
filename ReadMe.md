@@ -208,9 +208,7 @@ _______________________
             canUseCar //00010000
             canUseTrain //00100000
         )
-        var employee byte = isManager | canUseTrain //00100010
-         
-        
+        var employee byte = isManager | canUseTrain //00100010  
     ```
 >## Data Structures
 
@@ -777,8 +775,6 @@ _______________________
                     fmt.Println( ic.incrementer() )
                 }
             }
-
-            
             type IntCounter interface {
                 incrementer() int
             }
@@ -790,9 +786,146 @@ _______________________
                     return int(*obj)
             }
         ```
+     - composing multiple interfaces:
+        ```go
+            import "bytes" // for the sac of the example 
+
+            func main() {
+                var bwc WriterCloser = NewBufferedWriterCloser() 
+
+                bwc.Write([]byte("hello world from my first real usage interface"))
+                // so this will print 8 characters by line 
+                bwc.Close()
+                // if there is a less than 8 characters it will print them
+            }
+
+            type Writer interface {
+                Write([]byte) (int,error)
+            }
+            type Closer interface {
+                Close() error
+            }
+
+            type WriterCloser interface {
+                Writer
+                Closer
+            }
+
+            type BufferedWriterCloser struct {
+                buffer *byte.Buffer
+            } 
+
+            //now BufferedWriterCloser must implement both Write and Close methods
+            // the writer method
+            func (obj *BufferdWriterCloser) Write(data []byte) (int,error) {
+                n,err := obj.buffer.Write(data) // write date to buffer
+                if err != nil {
+                    return 0,err
+                }
+                
+                v := make([]byte , 8) // makes slice with array capacity of 8 bytes 
+                for obj.buffer.len() > 8 {
+
+                    _ ,err := obj.buffer.Read(v) // read from buffer to v 
+                    if err != nil {
+                        return 0,err
+                    }
+
+                    _, err := fmt.Println(string(v))
+                    if err != nil {
+                        return 0,err
+                    }
+                }
+            return n,nil
+            }
+            
+            // the Closer method
+            func (obj *BufferredWriterClose) Close() err {
+                for obj.buffer.len() > 0 {
+                    data := obj.buffer.Next(8) // read 8 bytes or until end of buffer and flush it
+                    _, err := fmt.Println(string(data)) 
+                    if err != nil {
+                        return 0, err
+                    }
+                }
+                return nil
+            }
+
+            // this function is only used to initialise the buffer inside the struct
+            func NewBufferedWriterCloser() *BufferedWriterCloser {
+                return &BufferedWriterclosed {
+                    buffer : bytes.NewBuffer([]byte{})
+                }
+            }
+        ```
+     - now in order to access directly to the struct attributs we need to typecat our interface type variable into the type of the instance and to do that:
+
+        ```go
+            // we will continue use the same beforehand defined struct and interface
+            func main() {
+                var wc WriterCloser = NewBufferedWriterCloser()
+                wc.Write([]byte("hello there again"))
+                wc.close()
+                
+                // since NewBufferredWriterCloser() return a *BufferedWriterCloser we should type cast our wc variable to that, and we can assign it to another vaiable 
+
+                bwc := wc.(*BufferedWriterCloser) 
+                // Note:
+                bwc := wc.(BufferedWriterCloser) //this will raise an error or panic we will know why later on
+
+                // in order to be sure that there is no error we use same syntax as maps
+                bwc,ok := wc.(*BufferedWriterCloser)
+                if ok {
+                    fmt.Println(bwc)
+                }else {
+                    fmt.Println("conversion failed")
+                }
+            }   
+
+         ``` 
+     - empty interfaces:
+
+        ```go
+            // in case we need to work with multiple non-compatible interfaces, the empty interface comes in handy because it allows us to use them all, by typecasting without getting any error like we did in the example before, because it doesn't require us to implement any methor:
+
+            var x interface{}/*this is how we declare it*/ = NewBufferedWriterCloser()
+
+            if wc, ok := x.(WriterCloser); ok {
+                wc.Write([]byte("hello for the third time"))
+                wc.close()
+            }
+            // and now x is WriterClosr so is wc
+            // and if we do this:
+            y, ok := x.(io.Reader) // just an interface from io package
+            if ok {
+                fmt.Println(y)
+            }else {
+                fmt.Println("conversion failed)
+            }
+        ``` 
+     - since the start we have been using * in our method definition instead of the type directly, and we said in example above that not using * will raise an error:
+        - that's because when we implemented the methods Write and Close:
+            ```go
+            func (obj *BufferedWriterClose) Close() error 
+            func (obj *BufferdWriterCloser) Write(data []byte) (int,error)
+            ```
+            we had pointer receiver (*Buf..,) and not value receiver (Buff...); we did that because we needed to access internel data the byte[] slice and to avoid creating a copy by passing it by value; now if implemented them using value reciver we still be able to access them using pointer.
+            ```Go
+                var x WriterReceiver = &BuffferedWriterReader{}
+            ```
+     - ***BEST PRACTICES***:
+        1. use small interfaces, that will avoid lot of conflict and debug,since strongest interfaces are always the smallest: 
+            **io.Reader**, **io.Writer**, **interface**.
+
+        1. Don't export interfaces for types that will be consumed, unlike db package, by that u can is without implementing every method.
+
+        1. Do export interfaces for types that will be used by the package, something you can't do in java because of its explicit implementation of interfaces.
+        
+        1. design function and method to accept interfaces whenever possible, when you don't need acces to internel attributs.
+        
 
 
 >#### Reference 
    - all appreciation goes to FreeCodeCamp and Micheal Van Sickle for the inspiration and help with the creation of this document.
 
-     **[FreecodeCamp Golang crash course  \*_*  ](https://www.youtube.com/watch?v=YS4e4q9oBaU)**
+     **[FreecodeCamp Golang crash course  \*-b*  ](https://www.youtube.com/watch?v=YS4e4q9oBaU)**
