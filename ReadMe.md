@@ -76,6 +76,7 @@ _______________________
 ---
  - ***sync*** Go routines:
     - **WaitGroup{}** 
+    - **RWMutex{}**
     - **add** add go routine to stack to wait for before terminating the execution.
     - **Wait()** wait for go routines to finish.
     - **Done()** send signal that the go routine finished.
@@ -942,7 +943,10 @@ _______________________
 
      ```go
 
-     import ("fmt","time", "runtime","sync")
+     import ( "fmt"
+            "time"
+            "sync"
+     )
 
      var wg = sync.WaitGroup{}
 
@@ -950,7 +954,12 @@ _______________________
 
          var msg = "Routines are awesome"
          wg.Add(1)
-         go msger() // output: routines sucks
+
+         // the reason i used anonymous function is to access msg and not copy it as func paarmeter
+         go func(){
+             fmt.Println(msg)
+         } ()
+         // output: routines sucks
 
          msg = "routines sucks"
          //we can use time.sleep(100 * Millisecond) to replace the following but is really bad practine
@@ -958,12 +967,48 @@ _______________________
          
      }
 
-     func msger() {
-         fmt.Println(msg)
-         wg.Done()
-     }
-
      ```
+     - Now to avoid the problem above or better say detect it we can use **"-race"** at compilation which signal multiple access to a variable at the same time.
+
+   - Now let's talk about ***sync.RWMutex{}*** :
+
+        when we have multiple go routine which want to access let say a variable at same time some uncertain behavior may happen so to control that we limit the access one at time, **we can have multiple reads, but only one write that happen after all reads are finished**:
+        ```go
+            import ("fmt"
+                    "sync"
+            )
+            var counter = 0
+            var m = sync.RWMutex{} 
+            var wg = sync.WaitGroup{}
+
+            func main() {
+                
+                for i := 0; i < 10; i++ {
+                    wg.add(2)
+                    go increment()
+                    go printer()
+                }
+                wg.Wait()
+
+                // this code may seem legit but what will happen is that once the Rlock() takes control it wont let the Lock of incrementer work Hence will get same value after first capture
+            }
+            func increment(){
+                m.Lock()
+                counter++
+                m.Unlock()
+                wg.Done()
+            } 
+            func printer(){
+                m.RLock()
+                fmt.Printf("value of Counter %v\n",counter)
+                m.RUnlock()
+                wg.Done()
+            }
+        ```
+    - ***BEST PRACTICES***:
+        - avoid making goroutines in libraries.
+        - 
+
 
 >#### Reference 
    - all appreciation goes to FreeCodeCamp and Micheal Van Sickle for the inspiration and help with the creation of this document.
