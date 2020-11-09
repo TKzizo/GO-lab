@@ -74,7 +74,18 @@ _______________________
  - ***io/ioutil*** input/output utilities:
     - **ReadAll** read bytes
 ---
-
+ - ***sync*** Go routines:
+    - **WaitGroup{}** 
+    - **add** add go routine to stack to wait for before terminating the execution.
+    - **Wait()** wait for go routines to finish.
+    - **Done()** send signal that the go routine finished.
+---
+ - ***time*** :
+    - **Sleep( )**
+    - **time.Millesecond**
+---
+ - ***runtime***:
+    - **GOMAXPROCS()** can set how many theads program can run on, if given negative value it returns how many threads are available. 
 
 >## Primitive types
 - **Boolean**
@@ -742,7 +753,7 @@ _______________________
         }
         
      ```
->> ## Interfaces:
+> ## Interfaces:
  - ***Notes*** :
     1. unlike struct, interfaces don't store data but behavior instead.
     1. In Go interfaces are **implemented implicitly** by creating a method that replicate their behavior.
@@ -923,9 +934,38 @@ _______________________
         
         1. design function and method to accept interfaces whenever possible, when you don't need acces to internel attributs.
         
+>## Go-Routines:
+   - ***GOROUTINES*** is not paralellism.
+   - ***GOROUTINES*** are high level abstraction of thread which makes manipulating them more easy and with less risk.
+   - the **main** function is a goroutine, the main one.
 
+
+     ```go
+
+     import ("fmt","time", "runtime","sync")
+
+     var wg = sync.WaitGroup{}
+
+     func main() {
+
+         var msg = "Routines are awesome"
+         wg.Add(1)
+         go msger() // output: routines sucks
+
+         msg = "routines sucks"
+         //we can use time.sleep(100 * Millisecond) to replace the following but is really bad practine
+         wg.Wait()
+         
+     }
+
+     func msger() {
+         fmt.Println(msg)
+         wg.Done()
+     }
+
+     ```
 
 >#### Reference 
    - all appreciation goes to FreeCodeCamp and Micheal Van Sickle for the inspiration and help with the creation of this document.
 
-     **[FreecodeCamp Golang crash course  \*-b*  ](https://www.youtube.com/watch?v=YS4e4q9oBaU)**
+     **[FreecodeCamp Golang crash course  \*-*  ](https://www.youtube.com/watch?v=YS4e4q9oBaU)**
