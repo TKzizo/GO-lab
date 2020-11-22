@@ -760,7 +760,6 @@ _______________________
     1. In Go interfaces are **implemented implicitly** by creating a method that replicate their behavior.
     1. by convention the name of an interface should end with a "er"
     1. declarations inside interfaces must start with capitas to be used outside of package.
-    1.
 
  - ***declaring an Interface*** :
     ```go
@@ -918,7 +917,8 @@ _______________________
      - since the start we have been using * in our method definition instead of the type directly, and we said in example above that not using * will raise an error:
         - that's because when we implemented the methods Write and Close:
             ```go
-            func (obj *BufferedWriterClose) Close() error 
+            func (obj *BufferedWriterClose) Close() error
+             
             func (obj *BufferdWriterCloser) Write(data []byte) (int,error)
             ```
             we had pointer receiver (*Buf..,) and not value receiver (Buff...); we did that because we needed to access internel data the byte[] slice and to avoid creating a copy by passing it by value; now if implemented them using value reciver we still be able to access them using pointer.
@@ -972,7 +972,7 @@ _______________________
 
    - Now let's talk about ***sync.RWMutex{}*** :
 
-        when we have multiple go routine which want to access let say a variable at same time some uncertain behavior may happen so to control that we limit the access one at time, **we can have multiple reads, but only one write that happen after all reads are finished**:
+        when we have multiple go routine which want to access let say a variable at same time, some uncertain behavior may happen so to control that we limit the access one at time, **we can have multiple reads, but only one write that happen after all reads are finished**:
         ```go
             import ("fmt"
                     "sync"
@@ -990,7 +990,7 @@ _______________________
                 }
                 wg.Wait()
 
-                // this code may seem legit but what will happen is that once the Rlock() takes control it wont let the Lock of incrementer work Hence will get same value after first capture
+                // this code may seem legit but what will happen is that once the Rlock() takes control it wont let the Lock of incrementer work Hence will get same value after first read lock
             }
             func increment(){
                 m.Lock()
@@ -1005,9 +1005,155 @@ _______________________
                 wg.Done()
             }
         ```
-    - ***BEST PRACTICES***:
-        - avoid making goroutines in libraries.
-        - 
+   - ***BEST PRACTICES***:
+     - avoid making goroutines in libraries.
+
+>## Channels:
+   - Making channels:
+
+     1. unlike other types we need to use "make" to create a channel
+
+     ```go
+        // unlike other types we need to use "make" to create a channel.
+        
+        // make(chan [type_to_pass])
+         ch := make(chan int)
+     ```
+     2. Example:
+      ```go
+        import ("fmt"
+                  "sync"
+                  )
+
+        wg := sync.WaitGroup{}
+
+        func main() {
+            ch := make(chan string)
+            wg.add(2)
+
+            func () {
+                i := <- ch // receive date from channel
+                fmt.Println(i)
+                wg.Done()
+            }()
+
+            func () {
+                i := 42 
+                ch <- i //send a copy of data to channel 
+                i++ 
+                wg.Done()
+            }
+        }
+      ```
+     3. Control Flow:
+        - sometimes or preferably we need to dedicate a channel to either read or write, inorder to have a more predictible behaviour:
+            ```go
+            // let use the previous example but lets make the go routine unidirectionel
+            wg := sync.WaitGroup{}
+
+            func main(){
+                ch := make(chan int)
+                wg.add(2)
+                // let make this routine receiving from channel
+                func (ch <- chan int ) {
+                    i := <- ch
+                    fmt.Println(i)
+                    wg.done
+                }(ch) //we must specify channel even if it is bidirectionnel, the go compiler can understand this kind of behaviour with channels
+
+                //let make this routine  sending to channel
+                func (ch chan <- int ) {
+                    i := 55 
+                    ch <- i
+                    wg.Done()
+                }(ch)
+
+            }
+            ```
+     4. Buffering Data:
+        - sometime processing data take longer than receiving them, so not to lose data we make the channel buffered, the way to do that is:
+        ```go
+            ch := make(chan int, [number of elements in buffer we want])
+        ```
+     5. ***Range*** through data:
+        - now in order to parse through that buffer we can use the range funtion:
+            ```go
+                for i := range ch {
+                    fmt.println(i)
+                }
+
+                func (ch chan <- int ) {
+                    i := 42 
+                    ch <- i
+                    i++
+                    ch <- i
+                    wg.Done()
+                }
+                // but this will rise an error sense we will get to empty channel
+
+                // we can remedy this by adding to the sending routine:
+                close(ch)
+                //but this will definitely close the channel and we can't send data
+
+
+                // a better way to do this is by cheking with a for loop:
+                // i should note that channels send multiple data like maps so we can use same sytanx to loop them
+                for {
+                    if i,ok := <- ch; ok {
+                        fmt.Println(i)
+                    }else {
+                        break
+                    }
+                } 
+            ```
+     6. ***Select*** statement:
+        - if we have many channels that we are monitoring and we want to know when to close them if they are done, so that they don't get shut forcebly and we don't have memory leak.
+        ```go
+            ch := make(chan string, 50)
+
+            func main() {
+                go printer()
+
+                ch <- "hell"
+                ch <- "bye"
+
+                time.sleep(500*Millisecond)
+            }
+            
+            func printer() {
+                for i := range ch {
+                    fmt.println(i)
+                }
+            }
+
+            //this will forcebly shut printer() at the end of main function, maybe leading to memory leakage in bigger programs
+
+            // Non-conventional method:
+            defer func() {
+                close(ch)
+            }()
+
+            //convetional method:
+            // we use an empty struct channle
+            cch := make(chan struct{})
+
+            func printer() {
+                for {
+                    select { // bloc statment until either channels receive a msg
+                        case entry := <_ ch:
+                            fmt.Println(i)
+
+                        case <- cch:
+                            break
+                        /* optional if none receive anything
+                        default: 
+                            do something
+                        */
+                    }
+                }
+            }
+        ``` 
+
 
 
 >#### Reference 
